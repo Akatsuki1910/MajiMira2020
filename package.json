@@ -1,0 +1,22 @@
+{
+  "name": "majimira2020",
+  "version": "1.0.0",
+  "description": "初音ミク「マジカルミライ 2020」プログラミング・コンテスト\r https://magicalmirai.com/2020/procon/",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Akatsuki1910/MajiMira2020.git"
+  },
+  "author": "akatsuki1910 <akatsukicirno@gmail.com>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Akatsuki1910/MajiMira2020/issues"
+  },
+  "homepage": "https://github.com/Akatsuki1910/MajiMira2020#readme",
+  "dependencies": {
+    "textalive-app-api": "^0.1.1"
+  }
+}
