@@ -13,28 +13,15 @@
 
 <body>
 	<div id="pixiview" class="canvas-wrapper">
-		<canvas></canvas>
-	</div>
-	<div id="content">
-		<div id="container"><p>歌詞があれば表示します</p></div>
-		<div id="beatbar"></div>
+		<canvas id="ThreeCanvas"></canvas>
 	</div>
 	<div id="overlay">
 		<div id="media"></div>
-		<div id="meta">
-			<div id="artist">
-				<strong>artist:</strong> <span>-</span>
-			</div>
-			<div id="song">
-				<strong>song:</strong> <span>-</span>
-			</div>
-		</div>
-		<div id="control" style="display: none;">
+		<div id="control">
 			<button id="play" disabled>再生</button>
 			<button id="jump" disabled>歌詞頭出し</button>
 			<button id="pause" disabled>一時停止</button>
 			<button id="rewind" disabled>巻き戻し</button>
-			<span id="position"><strong>-</strong> [ms]</span>
 		</div>
 	</div>
 	<script src="./main.js"></script>

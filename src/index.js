@@ -1,13 +1,22 @@
+import {
+  Player,
+  Ease
+} from "textalive-app-api";
+import * as THREE from 'three';
+import * as PIXI from 'pixi.js';
+import {
+  OrbitControls
+} from "three/examples/jsm/controls/OrbitControls";
 
-import { Player, Ease } from "textalive-app-api";
-// const { Player, Ease } = TextAliveApp;
 
+/*
+  textalive-app-api
+ */
 const player = new Player({
   app: {
-    appAuthor: "Jun Kato",
-    appName: "Phrase example"
+    appAuthor: "Akatsuki1910"
   },
-  mediaElement: document.querySelector("#media")
+  mediaElement: document.querySelector("#media") //動画
 });
 
 player.addListener({
@@ -21,12 +30,6 @@ const playBtn = document.querySelector("#play");
 const jumpBtn = document.querySelector("#jump");
 const pauseBtn = document.querySelector("#pause");
 const rewindBtn = document.querySelector("#rewind");
-const positionEl = document.querySelector("#position strong");
-
-const artistSpan = document.querySelector("#artist span");
-const songSpan = document.querySelector("#song span");
-const phraseEl = document.querySelector("#container p");
-const beatbarEl = document.querySelector("#beatbar");
 
 function onAppReady(app) {
   if (!app.managed) {
@@ -42,8 +45,8 @@ function onAppReady(app) {
 }
 
 function onTimerReady() {
-  artistSpan.textContent = player.data.song.artist.name; // アーティスト名
-  songSpan.textContent = player.data.song.name; // 曲名
+  // アーティスト名 player.data.song.artist.name
+  // 曲名 player.data.song.name
 
   document
     .querySelectorAll("button")
@@ -55,92 +58,100 @@ function onTimerReady() {
   // set `animate` method
   while (p && p.next) {
     p.animate = animatePhrase;
+    console.log(p.next)
     p = p.next;
   }
+  animate();
 }
 
 function onTimeUpdate(position) {
 
   // show beatbar
   const beat = player.findBeat(position);
+  // console.log(beat) // beat
   if (!beat) {
     return;
   }
-  beatbarEl.style.width = `${Math.ceil(Ease.circIn(beat.progress(position)) * 100)}%`;
 }
 
 function onThrottledTimeUpdate(position) {
-  positionEl.textContent = String(Math.floor(position)); //経過時間
-  textobj.text++;
+  // positionEl.textContent = String(Math.floor(position)); //経過時間
 }
 
 function animatePhrase(now, unit) {
-  // show current phrase
   if (unit.contains(now)) {
-    phraseEl.textContent = unit.text; //歌詞
+    textobj.text = unit.text; //歌詞
   }
 };
-
-import * as THREE from 'three';
-import * as PIXI from 'pixi.js'
 
 //pixi
 const width = window.innerWidth;
 const height = window.innerHeight;
 const stage = new PIXI.Container();
 const renderer = PIXI.autoDetectRenderer({
-	width: width,
-	height: height,
-	resolution: 1,
-	antialias: true,
-	transparent: true,
+  width: width,
+  height: height,
+  resolution: 1,
+  antialias: true,
+  transparent: true,
 });
 document.getElementById("pixiview").appendChild(renderer.view);
 window.onresize = function () {
-	location.reload();
+  location.reload();
 };
 
 function animate() {
-	requestAnimationFrame(animate);
+  requestAnimationFrame(animate);
   effectmain();
   renderer.render(stage);
 }
 
-var word = "0";
+var word = "ここに歌詞";
 var style = {
-	fontFamily: 'Arial',
-	fontSize: '40px',
-	fill: 'blue',
-	fontWeight: "bold"
+  fontFamily: 'Arial',
+  fontSize: '40px',
+  fill: 'blue',
+  fontWeight: "bold"
 };
 var textobj = new PIXI.Text(word, style);
 stage.addChild(textobj);
 
 //three
-// レンダラーを作成
-const canvas = document.querySelector('canvas');
 const rendererThree = new THREE.WebGLRenderer({
-	canvas: canvas,
-	antialias: true
+  canvas: document.querySelector("#ThreeCanvas"),
+  antialias: true,
 });
 rendererThree.setPixelRatio(window.devicePixelRatio);
 rendererThree.setSize(width, height);
-// シーンを作成
-const scene = new THREE.Scene();
-// カメラを作成
-const camera = new THREE.PerspectiveCamera(60, width / height);
-var cam_x = 500;
-var cam_y = 500;
-var cam_z = 1000;
-camera.position.set(cam_x, cam_y, cam_z);
-//camera.lookAt(new THREE.Vector3(0, 0, 0));
 
-//var controls = new THREE.TrackballControls(camera);
+const scene = new THREE.Scene();
+
+const camera = new THREE.PerspectiveCamera(45, width / height, 1, 10000);
+camera.position.set(0, 0, 1000);
+
+const geometry = new THREE.BoxGeometry(50, 50, 50);
+const material = new THREE.MeshStandardMaterial({
+  color: 0x0000ff
+});
+const box = new THREE.Mesh(geometry, material);
+scene.add(box);
+
+const directionalLight = new THREE.DirectionalLight(
+  0xffffff
+);
+directionalLight.position.set(1, 1, 1);
+scene.add(directionalLight);
+
+//debug
+const axesHelper = new THREE.AxesHelper(10000);
+scene.add(axesHelper);
+const controls = new OrbitControls(camera, rendererThree.domElement);
+controls.update();
+
+// first time
+rendererThree.render(scene, camera);
 
 function effectmain() {
-	//tick();
-	//controls.update();
-	rendererThree.render(scene, camera);
+  controls.update();
+  rendererThree.render(scene, camera);
 }
-
-animate();
