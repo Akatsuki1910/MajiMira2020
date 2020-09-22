@@ -10,8 +10,16 @@ import {
   GLTFLoader
 } from 'three/examples/jsm/loaders/GLTFLoader';
 import {
+  CCDIKSolver,
+  CCDIKHelper
+} from 'three/examples/jsm/animation/CCDIKSolver';
+import {
+  MMDLoader
+} from 'three/examples/jsm/loaders/MMDLoader';
+import {
   VRM,
-  VRMUtils
+  VRMUtils,
+  VRMSchema
 } from '@pixiv/three-vrm';
 import LYRICS from './lyrics';
 
@@ -115,15 +123,8 @@ rendererThree.setSize(width, height);
 const scene = new THREE.Scene();
 
 const camera = new THREE.PerspectiveCamera(45, width / height, 1, 10000);
-camera.position.set(0, 0, 10);
+camera.position.set(0, 25, 50);
 camera.lookAt(new THREE.Vector3(0, 0, 0));
-
-const geometry = new THREE.BoxGeometry(50, 50, 50);
-const material = new THREE.MeshStandardMaterial({
-  color: 0x0000ff
-});
-const box = new THREE.Mesh(geometry, material);
-// scene.add(box);
 
 const directionalLight = new THREE.DirectionalLight(
   0xffffff
@@ -139,26 +140,94 @@ scene.add( gridHelper );
 const controls = new OrbitControls(camera, rendererThree.domElement);
 controls.update();
 
-const loader = new GLTFLoader();
-loader.crossOrigin = 'anonymous';
+// const loader = new GLTFLoader();
+// let publicVrm;
+// loader.crossOrigin = 'anonymous';
+// loader.load(
+// 	'./models/miku.vrm',
+// 	( gltf ) => {
+//     VRMUtils.removeUnnecessaryJoints( gltf.scene );
+// 		VRM.from( gltf ).then( ( vrm ) => {
+// 			scene.add( vrm.scene );
+//       vrm.scene.rotation.y = Math.PI;
+//       publicVrm=vrm;
+// 		} );
+// 	},
+// 	( progress ) => console.log( 'Loading model...', 100.0 * ( progress.loaded / progress.total ), '%' ),
+// 	( error ) => console.error( error )
+// );
+// Instantiate a loader
+var loader = new MMDLoader();
+
+// Load a MMD model
+let ikSolver;
 loader.load(
-	'./models/miku.vrm',
-	( gltf ) => {
-    VRMUtils.removeUnnecessaryJoints( gltf.scene );
-		VRM.from( gltf ).then( ( vrm ) => {
-			scene.add( vrm.scene );
-      console.log( vrm );
-      vrm.scene.rotation.y = Math.PI;
-		} );
+	// path to PMD/PMX file
+  // './models/mmd/miku_yukihane.pmx',
+  './models/tsumi/miku.pmx',
+	// called when the resource is loaded
+	function ( mesh ) {
+    ikSolver = new CCDIKSolver( mesh, mesh.geometry.iks );
+    mesh.skeleton.bones[39].rotation.z=0.5;
+    scene.add(ikSolver.createHelper())
+    scene.add( mesh );
+    console.log(mesh)
+
 	},
-	( progress ) => console.log( 'Loading model...', 100.0 * ( progress.loaded / progress.total ), '%' ),
-	( error ) => console.error( error )
+	// called when loading is in progresses
+	function ( xhr ) {
+
+		console.log( ( xhr.loaded / xhr.total * 100 ) + '% loaded' );
+
+	},
+	// called when loading has errors
+	function ( error ) {
+
+		console.log( 'An error happened' );
+
+	}
 );
+
+var geometry = new THREE.Geometry();
+ 
+	// 八面体の頂点セット
+	geometry.vertices.push(new THREE.Vector3(0, 0, 1));
+	geometry.vertices.push(new THREE.Vector3(1, 0, 0));
+	geometry.vertices.push(new THREE.Vector3(0, -1, 0));
+	geometry.vertices.push(new THREE.Vector3(-1, 0, 0));
+	geometry.vertices.push(new THREE.Vector3(0, 1, 0));
+	geometry.vertices.push(new THREE.Vector3(0, 0, -1));
+ 
+	// 八面体の面セット
+	geometry.faces.push(new THREE.Face3( 0, 2, 1));
+	geometry.faces.push(new THREE.Face3( 0, 3, 2));
+	geometry.faces.push(new THREE.Face3( 0, 4, 3));
+	geometry.faces.push(new THREE.Face3( 0, 1, 4));
+	geometry.faces.push(new THREE.Face3( 5, 1, 2));
+	geometry.faces.push(new THREE.Face3( 5, 2, 3));
+	geometry.faces.push(new THREE.Face3( 5, 3, 4));
+	geometry.faces.push(new THREE.Face3( 5, 4, 1));
+ 
+	// 法線ベクトルの自動計算
+	geometry.computeFaceNormals();
+	geometry.computeVertexNormals();
+
+	// ワイヤーフレームのメッシュ作成
+	var wire = new THREE.MeshBasicMaterial({color: 0xffffff, wireframe: true});
+	var wireMesh = new THREE.Mesh(geometry, wire);
+	scene.add(wireMesh);
 
 // first time
 rendererThree.render(scene, camera);
 
+let p = -1;
+let deg = 0;
 function effectmain() {
   controls.update();
+  // publicVrm.humanoid.getBoneNode(VRMSchema.HumanoidBoneName.Neck).rotation.z = deg;
+  deg+=p*0.01;
+  if(Math.abs(deg)>0.3)p*=-1;
+  if ( ikSolver !== undefined ) ikSolver.update();
+  // if(ikHelper !== undefined && ikHelper.visible) ikHelper.update();
   rendererThree.render(scene, camera);
 }
