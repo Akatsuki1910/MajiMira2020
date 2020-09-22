@@ -3,10 +3,17 @@ import {
   Ease
 } from "textalive-app-api";
 import * as THREE from 'three';
-import * as PIXI from 'pixi.js';
 import {
   OrbitControls
 } from "three/examples/jsm/controls/OrbitControls";
+import {
+  GLTFLoader
+} from 'three/examples/jsm/loaders/GLTFLoader';
+import {
+  VRM,
+  VRMUtils
+} from '@pixiv/three-vrm';
+import LYRICS from './lyrics';
 
 
 /*
@@ -58,7 +65,7 @@ function onTimerReady() {
   // set `animate` method
   while (p && p.next) {
     p.animate = animatePhrase;
-    console.log(p.next)
+    // console.log(p.next)
     p = p.next;
   }
   animate();
@@ -78,43 +85,24 @@ function onThrottledTimeUpdate(position) {
   // positionEl.textContent = String(Math.floor(position)); //経過時間
 }
 
+let lyricesText = "ここに歌詞";
+
 function animatePhrase(now, unit) {
   if (unit.contains(now)) {
-    textobj.text = unit.text; //歌詞
+    lyricesText = unit.text; //歌詞
   }
 };
 
 //pixi
 const width = window.innerWidth;
 const height = window.innerHeight;
-const stage = new PIXI.Container();
-const renderer = PIXI.autoDetectRenderer({
-  width: width,
-  height: height,
-  resolution: 1,
-  antialias: true,
-  transparent: true,
-});
-document.getElementById("pixiview").appendChild(renderer.view);
-window.onresize = function () {
-  location.reload();
-};
+const ly = new LYRICS(width, height);
 
 function animate() {
   requestAnimationFrame(animate);
   effectmain();
-  renderer.render(stage);
+  ly.animation(lyricesText);
 }
-
-var word = "ここに歌詞";
-var style = {
-  fontFamily: 'Arial',
-  fontSize: '40px',
-  fill: 'blue',
-  fontWeight: "bold"
-};
-var textobj = new PIXI.Text(word, style);
-stage.addChild(textobj);
 
 //three
 const rendererThree = new THREE.WebGLRenderer({
@@ -127,14 +115,15 @@ rendererThree.setSize(width, height);
 const scene = new THREE.Scene();
 
 const camera = new THREE.PerspectiveCamera(45, width / height, 1, 10000);
-camera.position.set(0, 0, 1000);
+camera.position.set(0, 0, 10);
+camera.lookAt(new THREE.Vector3(0, 0, 0));
 
 const geometry = new THREE.BoxGeometry(50, 50, 50);
 const material = new THREE.MeshStandardMaterial({
   color: 0x0000ff
 });
 const box = new THREE.Mesh(geometry, material);
-scene.add(box);
+// scene.add(box);
 
 const directionalLight = new THREE.DirectionalLight(
   0xffffff
@@ -145,8 +134,26 @@ scene.add(directionalLight);
 //debug
 const axesHelper = new THREE.AxesHelper(10000);
 scene.add(axesHelper);
+const gridHelper = new THREE.GridHelper( 1000, 1000);
+scene.add( gridHelper );
 const controls = new OrbitControls(camera, rendererThree.domElement);
 controls.update();
+
+const loader = new GLTFLoader();
+loader.crossOrigin = 'anonymous';
+loader.load(
+	'./models/miku.vrm',
+	( gltf ) => {
+    VRMUtils.removeUnnecessaryJoints( gltf.scene );
+		VRM.from( gltf ).then( ( vrm ) => {
+			scene.add( vrm.scene );
+      console.log( vrm );
+      vrm.scene.rotation.y = Math.PI;
+		} );
+	},
+	( progress ) => console.log( 'Loading model...', 100.0 * ( progress.loaded / progress.total ), '%' ),
+	( error ) => console.error( error )
+);
 
 // first time
 rendererThree.render(scene, camera);

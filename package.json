@@ -4,8 +4,9 @@
   "description": "初音ミク「マジカルミライ 2020」プログラミング・コンテスト\r https://magicalmirai.com/2020/procon/",
   "main": "index.js",
   "scripts": {
-    "build": "webpack --watch",
-    "start": "webpack-dev-server"
+    "build": "webpack --mode development",
+    "start": "webpack-dev-server",
+    "watch": "webpack --watch"
   },
   "repository": {
     "type": "git",
@@ -18,6 +19,7 @@
   },
   "homepage": "https://github.com/Akatsuki1910/MajiMira2020#readme",
   "dependencies": {
+    "@pixiv/three-vrm": "^0.4.1",
     "@types/node": "^14.11.2",
     "pixi.js": "^5.3.3",
     "textalive-app-api": "^0.1.1",
