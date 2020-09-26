@@ -2,7 +2,6 @@ import {
   Player,
   Ease
 } from "textalive-app-api";
-import * as THREE from 'three';
 import {
   OrbitControls
 } from "three/examples/jsm/controls/OrbitControls";
@@ -10,18 +9,24 @@ import {
   GLTFLoader
 } from 'three/examples/jsm/loaders/GLTFLoader';
 import {
-  CCDIKSolver,
-  CCDIKHelper
-} from 'three/examples/jsm/animation/CCDIKSolver';
-import {
-  MMDLoader
-} from 'three/examples/jsm/loaders/MMDLoader';
-import {
   VRM,
   VRMUtils,
   VRMSchema
 } from '@pixiv/three-vrm';
 import LYRICS from './lyrics';
+import {
+  createMoon
+} from './moon';
+import {
+  createStar
+} from './star';
+import Stats from 'stats.js';
+import {
+  createStone
+} from './stone';
+import {
+  createMMD
+} from './mmd';
 
 
 /*
@@ -70,10 +75,8 @@ function onTimerReady() {
   let p = player.video.firstPhrase;
   jumpBtn.disabled = !p;
 
-  // set `animate` method
   while (p && p.next) {
     p.animate = animatePhrase;
-    // console.log(p.next)
     p = p.next;
   }
   animate();
@@ -81,7 +84,6 @@ function onTimerReady() {
 
 function onTimeUpdate(position) {
 
-  // show beatbar
   const beat = player.findBeat(position);
   // console.log(beat) // beat
   if (!beat) {
@@ -108,8 +110,10 @@ const ly = new LYRICS(width, height);
 
 function animate() {
   requestAnimationFrame(animate);
+  stats.begin();
   effectmain();
   ly.animation(lyricesText);
+  stats.end();
 }
 
 //three
@@ -123,7 +127,7 @@ rendererThree.setSize(width, height);
 const scene = new THREE.Scene();
 
 const camera = new THREE.PerspectiveCamera(45, width / height, 1, 10000);
-camera.position.set(0, 25, 50);
+camera.position.set(0, 30, 400);
 camera.lookAt(new THREE.Vector3(0, 0, 0));
 
 const directionalLight = new THREE.DirectionalLight(
@@ -133,12 +137,15 @@ directionalLight.position.set(1, 1, 1);
 scene.add(directionalLight);
 
 //debug
-const axesHelper = new THREE.AxesHelper(10000);
-scene.add(axesHelper);
-const gridHelper = new THREE.GridHelper( 1000, 1000);
-scene.add( gridHelper );
+// const axesHelper = new THREE.AxesHelper(10000);
+// scene.add(axesHelper);
+// const gridHelper = new THREE.GridHelper(1000, 1000);
+// scene.add(gridHelper);
 const controls = new OrbitControls(camera, rendererThree.domElement);
 controls.update();
+const stats = new Stats();
+stats.showPanel(0);
+document.body.appendChild(stats.dom);
 
 // const loader = new GLTFLoader();
 // let publicVrm;
@@ -156,78 +163,28 @@ controls.update();
 // 	( progress ) => console.log( 'Loading model...', 100.0 * ( progress.loaded / progress.total ), '%' ),
 // 	( error ) => console.error( error )
 // );
-// Instantiate a loader
-var loader = new MMDLoader();
 
-// Load a MMD model
-let ikSolver;
-loader.load(
-	// path to PMD/PMX file
-  // './models/mmd/miku_yukihane.pmx',
-  './models/tsumi/miku.pmx',
-	// called when the resource is loaded
-	function ( mesh ) {
-    ikSolver = new CCDIKSolver( mesh, mesh.geometry.iks );
-    mesh.skeleton.bones[39].rotation.z=0.5;
-    scene.add(ikSolver.createHelper())
-    scene.add( mesh );
-    console.log(mesh)
 
-	},
-	// called when loading is in progresses
-	function ( xhr ) {
 
-		console.log( ( xhr.loaded / xhr.total * 100 ) + '% loaded' );
-
-	},
-	// called when loading has errors
-	function ( error ) {
-
-		console.log( 'An error happened' );
-
-	}
-);
-
-var geometry = new THREE.Geometry();
- 
-	// 八面体の頂点セット
-	geometry.vertices.push(new THREE.Vector3(0, 0, 1));
-	geometry.vertices.push(new THREE.Vector3(1, 0, 0));
-	geometry.vertices.push(new THREE.Vector3(0, -1, 0));
-	geometry.vertices.push(new THREE.Vector3(-1, 0, 0));
-	geometry.vertices.push(new THREE.Vector3(0, 1, 0));
-	geometry.vertices.push(new THREE.Vector3(0, 0, -1));
- 
-	// 八面体の面セット
-	geometry.faces.push(new THREE.Face3( 0, 2, 1));
-	geometry.faces.push(new THREE.Face3( 0, 3, 2));
-	geometry.faces.push(new THREE.Face3( 0, 4, 3));
-	geometry.faces.push(new THREE.Face3( 0, 1, 4));
-	geometry.faces.push(new THREE.Face3( 5, 1, 2));
-	geometry.faces.push(new THREE.Face3( 5, 2, 3));
-	geometry.faces.push(new THREE.Face3( 5, 3, 4));
-	geometry.faces.push(new THREE.Face3( 5, 4, 1));
- 
-	// 法線ベクトルの自動計算
-	geometry.computeFaceNormals();
-	geometry.computeVertexNormals();
-
-	// ワイヤーフレームのメッシュ作成
-	var wire = new THREE.MeshBasicMaterial({color: 0xffffff, wireframe: true});
-	var wireMesh = new THREE.Mesh(geometry, wire);
-	scene.add(wireMesh);
+const moon = createMoon(scene);
+moon.position.set(250, 100, 0);
+moon.scale.set(10, 10, 10)
+createStar(scene);
+const stone = createStone(scene)
+stone.scale.set(3, 3, 3)
+stone.position.set(70, 0, 250)
+createMMD(scene);
 
 // first time
 rendererThree.render(scene, camera);
 
 let p = -1;
 let deg = 0;
+
 function effectmain() {
   controls.update();
   // publicVrm.humanoid.getBoneNode(VRMSchema.HumanoidBoneName.Neck).rotation.z = deg;
-  deg+=p*0.01;
-  if(Math.abs(deg)>0.3)p*=-1;
-  if ( ikSolver !== undefined ) ikSolver.update();
-  // if(ikHelper !== undefined && ikHelper.visible) ikHelper.update();
+  deg += p * 0.01;
+  if (Math.abs(deg) > 0.3) p *= -1;
   rendererThree.render(scene, camera);
 }

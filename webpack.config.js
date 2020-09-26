@@ -1,9 +1,12 @@
 const path = require('path');
+const webpack = require('webpack');
+// const fs = require('fs');
 
 module.exports = {
   entry: `./src/index.js`,
   watch: true,
   cache: true,
+  node: { fs: 'empty'},
   output: {
     filename: "main.js",
     path: path.resolve(__dirname, 'dist')
@@ -31,5 +34,10 @@ module.exports = {
       }]
     }]
   },
-
+  plugins:[
+    new webpack.ProvidePlugin({
+      THREE: 'three',
+      Ammo: 'ammo.js'
+    }),
+  ]
 };
