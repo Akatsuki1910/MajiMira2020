@@ -28,7 +28,7 @@ export default class {
 
 	animation(lyricesText) {
 		this.textobj.text = lyricesText;
-		this.textobj.position.set(this.w/2-this.textobj.text.length*10*2, this.h/2-10)
+		this.textobj.position.set(this.w/2-this.textobj.text.length*10*2, this.h/2-10);
 		this.renderer.render(this.stage);
 	}
 
@@ -37,7 +37,7 @@ export default class {
 		this.style = {
 			fontFamily: 'Arial',
 			fontSize: '40px',
-			fill: 'blue',
+			fill: 'white',
 			fontWeight: "bold"
 		};
 		this.textobj = new PIXI.Text(this.word, this.style);
