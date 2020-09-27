@@ -36,6 +36,8 @@ const player = new Player({
   app: {
     appAuthor: "Akatsuki1910"
   },
+  valenceArousalEnabled: true,
+  vocalAmplitudeEnabled: true,
   mediaElement: document.querySelector("#media") //動画
 });
 
@@ -68,6 +70,8 @@ function onTimerReady() {
   // アーティスト名 player.data.song.artist.name
   // 曲名 player.data.song.name
 
+  console.log(player.data.songMap)
+
   document
     .querySelectorAll("button")
     .forEach((btn) => (btn.disabled = false));
@@ -79,7 +83,10 @@ function onTimerReady() {
     p.animate = animatePhrase;
     p = p.next;
   }
-  animate();
+
+  console.log("All load complete");
+  ly.status = 1;
+  lyricesText = "gogogogogo";
 }
 
 function onTimeUpdate(position) {
@@ -98,15 +105,20 @@ function onThrottledTimeUpdate(position) {
 let lyricesText = "ここに歌詞";
 
 function animatePhrase(now, unit) {
+  // const text = player.video.findWord(player.timer.position)._data.characters.reduce((kashi, moji) => kashi += moji.char, "");
+  // console.log(player.video.findPhrase(player.timer.position)._data.words[0].characters);
+  // console.log(player.video.findChar(player.timer.position)._data.char);
+  // console.log(player.findChorus(player.timer.position));
   if (unit.contains(now)) {
     lyricesText = unit.text; //歌詞
+    // lyricesText = text;
   }
 };
 
 //pixi
 const width = window.innerWidth;
 const height = window.innerHeight;
-const ly = new LYRICS(width, height);
+const ly = new LYRICS(width, height, player);
 
 function animate() {
   requestAnimationFrame(animate);
@@ -168,19 +180,15 @@ createMoon(scene);
 createStar(scene);
 const stone = createStone(scene)
 stone.scale.set(3, 3, 3)
-stone.rotateY(Math.PI/6)
+stone.rotateY(Math.PI / 6)
 createMMD(scene);
 
 // first time
 rendererThree.render(scene, camera);
 
-let p = -1;
-let deg = 0;
-
 function effectmain() {
   controls.update();
   // publicVrm.humanoid.getBoneNode(VRMSchema.HumanoidBoneName.Neck).rotation.z = deg;
-  deg += p * 0.01;
-  if (Math.abs(deg) > 0.3) p *= -1;
   rendererThree.render(scene, camera);
 }
+animate();
