@@ -58,8 +58,9 @@ export function createMMD(scene) {
 				physicsHelper.visible = false;
 				scene.add(physicsHelper);
 				motionFiles[0].action.play();
-				mesh.rotateY(Math.PI * 7 / 6)
-				mesh.position.set(65, 2, 241)
+
+				mesh.position.set(0, 1.5, 9)
+
 				animate();
 			}, (xhr) => {
 				progress(xhr, "motion");

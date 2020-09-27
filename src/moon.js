@@ -1,26 +1,19 @@
+import {
+	TextureLoader
+} from "three/src/loaders/TextureLoader";
+
 export function createMoon(scene) {
-	const geometry = new THREE.Geometry();
-	const p = 3;
-	const deg = 180;
-	const firstPoint = -90 - deg / 3;
-	const endPoint = 270 + deg;
-	const t = 1.3;
-	const moveX = 0.8;
-	for (var i = firstPoint; i < endPoint; i++) {
-		geometry.vertices.push(new THREE.Vector3(p * Math.cos(Math.PI * i / 180), p * Math.sin(Math.PI * i / 180), 0));
-		geometry.vertices.push(new THREE.Vector3(p * Math.cos(Math.PI * i / 180) / t - moveX, p * Math.sin(Math.PI * i / 180) / t, 0));
-	}
-	const pointNum = Math.abs(firstPoint - endPoint);
-	for (var i = 0; i < pointNum - 2; i++) {
-		geometry.faces.push(new THREE.Face3(i, i + 1, i + 2));
-	}
-	geometry.computeFaceNormals();
-	geometry.computeVertexNormals();
-	const material = new THREE.MeshBasicMaterial({
-		color: 0xffff00,
-		side: THREE.DoubleSide
+	const geometry = new THREE.SphereGeometry(20, 20, 20);
+	const loader = new TextureLoader();
+	loader.load('./moon_nasa.jpg', (texture) => {
+		const mesh = new THREE.Mesh(
+			geometry,
+			new THREE.MeshStandardMaterial({
+				map: texture
+			})
+		);
+		mesh.position.set(window.innerWidth / 10, window.innerHeight / 10, 0)
+		scene.add(mesh);
 	});
-	const mesh = new THREE.Mesh(geometry, material);
-	scene.add(mesh);
-	return mesh;
+	// return mesh;
 }

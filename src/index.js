@@ -127,14 +127,12 @@ rendererThree.setSize(width, height);
 const scene = new THREE.Scene();
 
 const camera = new THREE.PerspectiveCamera(45, width / height, 1, 10000);
-camera.position.set(0, 30, 400);
+camera.position.set(0, 30, 300);
 camera.lookAt(new THREE.Vector3(0, 0, 0));
 
-const directionalLight = new THREE.DirectionalLight(
-  0xffffff
-);
-directionalLight.position.set(1, 1, 1);
-scene.add(directionalLight);
+const light = new THREE.PointLight(0xFFFFFF, 2, 1000, 1.0);
+light.position.set(0, 100, 500);
+scene.add(light);
 
 //debug
 // const axesHelper = new THREE.AxesHelper(10000);
@@ -166,13 +164,11 @@ document.body.appendChild(stats.dom);
 
 
 
-const moon = createMoon(scene);
-moon.position.set(250, 100, 0);
-moon.scale.set(10, 10, 10)
+createMoon(scene);
 createStar(scene);
 const stone = createStone(scene)
 stone.scale.set(3, 3, 3)
-stone.position.set(70, 0, 250)
+stone.rotateY(Math.PI/6)
 createMMD(scene);
 
 // first time
