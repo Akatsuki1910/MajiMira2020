@@ -56,7 +56,7 @@ const rewindBtn = document.querySelector("#rewind");
 function onAppReady(app) {
   if (!app.managed) {
     document.querySelector("#control").style.display = "block";
-    playBtn.addEventListener("click", () => player.video && player.requestPlay());
+    playBtn.addEventListener("click", () => onPlay());
     jumpBtn.addEventListener("click", () => player.video && player.requestMediaSeek(player.video.firstPhrase.startTime));
     pauseBtn.addEventListener("click", () => player.video && player.requestPause());
     rewindBtn.addEventListener("click", () => player.video && player.requestMediaSeek(0));
@@ -102,13 +102,24 @@ function onThrottledTimeUpdate(position) {
   // positionEl.textContent = String(Math.floor(position)); //経過時間
 }
 
+let playFlg = false;
+function onPlay(){
+  player.video && player.requestPlay();
+  ly.timer=0;
+  playFlg=true;
+}
+
 let lyricesText = "ここに歌詞";
 
 function animatePhrase(now, unit) {
   // const text = player.video.findWord(player.timer.position)._data.characters.reduce((kashi, moji) => kashi += moji.char, "");
-  // console.log(player.video.findPhrase(player.timer.position)._data.words[0].characters);
+  // console.log(player.video.findWord(player.timer.position))
+  // console.log(player.video.findPhrase(player.timer.position));
   // console.log(player.video.findChar(player.timer.position)._data.char);
   // console.log(player.findChorus(player.timer.position));
+  if(player.video.findPhrase(player.timer.position)==null){
+    lyricesText="";
+  }
   if (unit.contains(now)) {
     lyricesText = unit.text; //歌詞
     // lyricesText = text;
@@ -124,7 +135,7 @@ function animate() {
   requestAnimationFrame(animate);
   stats.begin();
   effectmain();
-  ly.animation(lyricesText);
+  ly.animation(lyricesText,playFlg);
   stats.end();
 }
 
