@@ -5,6 +5,7 @@ import * as PIXI from 'pixi.js';
 export default class {
 	constructor(w, h, p) {
 		this.stage = new PIXI.Container();
+		this.stage.sortChildren = true;
 		this.renderer = PIXI.autoDetectRenderer({
 			width: w,
 			height: h,
@@ -21,6 +22,7 @@ export default class {
 		document.getElementById("pixiview").appendChild(this.renderer.view);
 
 		this.createLyric();
+		this.firstContent();
 	}
 
 	get status() {
@@ -31,15 +33,26 @@ export default class {
 		this.statusFlg = p;
 	}
 
-	animation(lyricesText, flg) {
+	onPlay() {
+		this.player.video && this.player.requestPlay();
+		this.timer = 0;
+		this.statusFlg = 2;
+	}
+
+	animation(lyricesText) {
 		this.textobj.text = "　" + lyricesText + "　";
-		this.textobj.position.set(this.w / 2 - (this.textobj.text.length) * this.fontSize / 2, this.h / 2 - 10);
-		if (flg) {
+		this.textobj.position.set(this.w / 2 - (this.textobj.text.length) * this.fontSize / 2, this.h / 2 - this.fontSize / 2);
+		if (this.statusFlg == 1) {
+			this.titleobj.text = "Start";
+			this.titleobj.position.set(this.w / 2 - (this.titleobj.text.length / 2) * this.fontSize / 2, this.h / 2 - this.fontSize / 2);
+		}
+		if (this.statusFlg == 2) {
 			if (this.timer % 5 == 0) {
 				this.filter.refresh();
 			}
 			this.timer++;
 		}
+		this.contentFade(this.player.timer.position)
 		this.renderer.render(this.stage);
 	}
 
@@ -52,15 +65,6 @@ export default class {
 			fontWeight: "bold"
 		};
 		this.textobj = new PIXI.Text(this.word, this.style);
-		this.textobj.interactive = true;
-		this.textobj.on('click', function () {
-			console.log("text click");
-			var elements = document.getElementsByTagName('canvas');
-			for (let i = 0; i < elements.length; i++) {
-				elements[i].style.pointerEvents = "none";
-			}
-			document.getElementById("ThreeCanvas").style.pointerEvents = "auto";
-		});
 
 		const gli = 2;
 		this.filter = new GlitchFilter({
@@ -74,5 +78,43 @@ export default class {
 		this.textobj.filters = [this.filter];
 
 		this.stage.addChild(this.textobj);
+	}
+
+	firstContent() {
+		this.square = new PIXI.Graphics();
+		this.square.beginFill(0xff00ff);
+		this.square.drawRect(0, 0, this.w, this.h);
+		this.square.endFill();
+
+		this.stage.addChild(this.square);
+		this.square.zIndex = 5;
+
+		this.title = "Now Loading...";
+		this.titleStyle = {
+			fontFamily: 'Arial',
+			fontSize: this.fontSize + "px",
+			fill: 'white',
+			fontWeight: "bold"
+		};
+		this.titleobj = new PIXI.Text(this.title, this.titleStyle);
+		this.stage.addChild(this.titleobj);
+		this.titleobj.zIndex = 6;
+		this.titleobj.position.set(this.w / 2 - (this.titleobj.text.length / 2) * this.fontSize / 2, this.h / 2 - this.fontSize / 2);
+		this.titleobj.interactive = true;
+		this.titleobj.on('click', () => {
+			console.log("text click");
+			if (this.statusFlg == 1) {
+				this.onPlay();
+			}
+		});
+
+	}
+
+	contentFade(time) {
+		const timer = 8000;
+		let alpha = (timer - time) / timer;
+		if (alpha <= 0) alpha = 0;
+		this.square.alpha = alpha;
+		this.titleobj.alpha = alpha;
 	}
 }

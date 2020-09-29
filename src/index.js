@@ -86,7 +86,6 @@ function onTimerReady() {
 
   console.log("All load complete");
   ly.status = 1;
-  lyricesText = "gogogogogo";
 }
 
 function onTimeUpdate(position) {
@@ -103,26 +102,18 @@ function onThrottledTimeUpdate(position) {
 }
 
 let playFlg = false;
-function onPlay(){
+
+function onPlay() {
   player.video && player.requestPlay();
-  ly.timer=0;
-  playFlg=true;
+  ly.timer = 0;
+  playFlg = true;
 }
 
 let lyricesText = "ここに歌詞";
 
 function animatePhrase(now, unit) {
-  // const text = player.video.findWord(player.timer.position)._data.characters.reduce((kashi, moji) => kashi += moji.char, "");
-  // console.log(player.video.findWord(player.timer.position))
-  // console.log(player.video.findPhrase(player.timer.position));
-  // console.log(player.video.findChar(player.timer.position)._data.char);
-  // console.log(player.findChorus(player.timer.position));
-  if(player.video.findPhrase(player.timer.position)==null){
-    lyricesText="";
-  }
   if (unit.contains(now)) {
     lyricesText = unit.text; //歌詞
-    // lyricesText = text;
   }
 };
 
@@ -135,8 +126,29 @@ function animate() {
   requestAnimationFrame(animate);
   stats.begin();
   effectmain();
-  ly.animation(lyricesText,playFlg);
+  ly.animation(lyricesTextFunc());
   stats.end();
+}
+
+let whileTimeStart;
+let whileTimeEnd;
+
+function lyricesTextFunc() {
+  if (ly.status > 0) {
+    const p = player.video.findWord(player.timer.position);
+    const text2 = (p == null) ? "" : player.video.findWord(player.timer.position)._data.characters.reduce((kashi, moji) => kashi += moji.char, "");
+    const nowEndTime = (p == null) ? 0 : player.video.findWord(player.timer.position)._data.endTime;
+    const nextStartTime = (p == null) ? 0 : player.video.findWord(player.timer.position)._next._data.startTime;
+    if (nextStartTime - nowEndTime >= 1000) {
+      whileTimeStart = nowEndTime;
+      whileTimeEnd = nextStartTime;
+    }
+    const nowTime = player.timer.position;
+    if (whileTimeStart < nowTime && nowTime < whileTimeEnd) {
+      lyricesText = "";
+    }
+  }
+  return lyricesText;
 }
 
 //three
