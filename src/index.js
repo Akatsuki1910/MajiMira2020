@@ -85,7 +85,7 @@ function onTimerReady() {
   }
 
   console.log("All load complete");
-  ly.status = 1;
+  ly.onReady();
 }
 
 function onTimeUpdate(position) {
@@ -136,9 +136,8 @@ let whileTimeEnd;
 function lyricesTextFunc() {
   if (ly.status > 0) {
     const p = player.video.findWord(player.timer.position);
-    const text2 = (p == null) ? "" : player.video.findWord(player.timer.position)._data.characters.reduce((kashi, moji) => kashi += moji.char, "");
     const nowEndTime = (p == null) ? 0 : player.video.findWord(player.timer.position)._data.endTime;
-    const nextStartTime = (p == null) ? 0 : player.video.findWord(player.timer.position)._next._data.startTime;
+    const nextStartTime = (p == null || p._next == null) ? 0 : player.video.findWord(player.timer.position)._next._data.startTime;
     if (nextStartTime - nowEndTime >= 1000) {
       whileTimeStart = nowEndTime;
       whileTimeEnd = nextStartTime;
@@ -211,7 +210,6 @@ rendererThree.render(scene, camera);
 
 function effectmain() {
   controls.update();
-  // publicVrm.humanoid.getBoneNode(VRMSchema.HumanoidBoneName.Neck).rotation.z = deg;
   rendererThree.render(scene, camera);
 }
 animate();

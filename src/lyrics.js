@@ -33,6 +33,11 @@ export default class {
 		this.statusFlg = p;
 	}
 
+	onReady() {
+		this.createTitleSong();
+		this.statusFlg = 1;
+	}
+
 	onPlay() {
 		this.player.video && this.player.requestPlay();
 		this.timer = 0;
@@ -50,8 +55,12 @@ export default class {
 			if (this.timer % 5 == 0) {
 				this.filter.refresh();
 			}
+			this.titleSong(this.timer);
+
+			console.log(this.timer);
 			this.timer++;
 		}
+
 		this.contentFade(this.player.timer.position)
 		this.renderer.render(this.stage);
 	}
@@ -107,11 +116,63 @@ export default class {
 				this.onPlay();
 			}
 		});
+	}
 
+	titleSong(time) {
+		// console.log(this.player.data)
+
+		if ((time >= 1450 && time <= 2000) || time >= 14050) {
+			this.songTitleobj.alpha = 1;
+			this.songArtistobj.alpha = 1;
+			this.songMVobj.alpha = 1;
+		} else {
+			this.songTitleobj.alpha = 0;
+			this.songArtistobj.alpha = 0;
+			this.songMVobj.alpha = 0;
+		}
+		// console.log(this.songTitleobj.alpha)
+	}
+
+	createTitleSong() {
+		const songTitleFontSize = 100;
+		this.songTitle = this.player.data.song.name;
+		this.songTitleStyle = {
+			fontFamily: 'Arial',
+			fontSize: songTitleFontSize + "px",
+			fill: 'white',
+			fontWeight: "bold"
+		};
+		this.songTitleobj = new PIXI.Text(this.songTitle, this.songTitleStyle);
+		this.stage.addChild(this.songTitleobj);
+		this.songTitleobj.position.set(this.w / 2 - (this.songTitleobj.text.length) * songTitleFontSize / 2, this.h / 2 - songTitleFontSize - 30);
+
+		this.songArtist = "Music : " + this.player.data.song.artist.name;
+		this.songArtistStyle = {
+			fontFamily: 'Arial',
+			fontSize: this.fontSize + "px",
+			fill: 'white',
+			fontWeight: "bold"
+		};
+		this.songArtistobj = new PIXI.Text(this.songArtist, this.songArtistStyle);
+		this.stage.addChild(this.songArtistobj);
+		this.songArtistobj.position.set(this.w / 2 - (this.songTitleobj.text.length) * this.fontSize / 2 - 60, this.h / 2 + 50);
+
+		this.songMV = "Movie : 暁の流星";
+		this.songMVStyle = {
+			fontFamily: 'Arial',
+			fontSize: this.fontSize + "px",
+			fill: 'white',
+			fontWeight: "bold"
+		};
+		this.songMVobj = new PIXI.Text(this.songMV, this.songMVStyle);
+		this.stage.addChild(this.songMVobj);
+		this.songMVobj.position.set(this.w / 2 - 20, this.h / 2 + 50);
+
+		this.titleSong(0)
 	}
 
 	contentFade(time) {
-		const timer = 8000;
+		const timer = 7000;
 		let alpha = (timer - time) / timer;
 		if (alpha <= 0) alpha = 0;
 		this.square.alpha = alpha;
