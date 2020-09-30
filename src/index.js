@@ -109,7 +109,7 @@ function onThrottledTimeUpdate(position) {
 let lyricesText = "ここに歌詞";
 
 function animatePhrase(now, unit) {
-  console.log(unit);
+  console.log(player.video.findChar(player.timer.position)._data.char);
   if (unit.contains(now)) {
     lyricesText = unit.text; //歌詞
   }
