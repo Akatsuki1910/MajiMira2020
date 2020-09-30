@@ -55,9 +55,9 @@ export default class {
 			if (this.timer % 5 == 0) {
 				this.filter.refresh();
 			}
-			this.titleSong(this.timer);
+			this.titleSong(this.player.timer.position);
 
-			console.log(this.timer);
+			// console.log(this.timer);
 			this.timer++;
 		}
 
@@ -121,7 +121,7 @@ export default class {
 	titleSong(time) {
 		// console.log(this.player.data)
 
-		if ((time >= 1450 && time <= 2000) || time >= 14050) {
+		if ((time >= 24000 && time <= 33000) || time >= 2380000) {
 			this.songTitleobj.alpha = 1;
 			this.songArtistobj.alpha = 1;
 			this.songMVobj.alpha = 1;

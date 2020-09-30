@@ -91,7 +91,12 @@ function onTimerReady() {
 function onTimeUpdate(position) {
 
   const beat = player.findBeat(position);
+  stats.begin();
+  effectmain();
+  ly.animation(lyricesTextFunc());
+  stats.end();
   // console.log(beat) // beat
+  console.log(player.timer.position)
   if (!beat) {
     return;
   }
@@ -124,10 +129,8 @@ const ly = new LYRICS(width, height, player);
 
 function animate() {
   requestAnimationFrame(animate);
-  stats.begin();
   effectmain();
   ly.animation(lyricesTextFunc());
-  stats.end();
 }
 
 let whileTimeStart;
@@ -137,7 +140,7 @@ function lyricesTextFunc() {
   if (ly.status > 0) {
     const p = player.video.findWord(player.timer.position);
     const nowEndTime = (p == null) ? 0 : player.video.findWord(player.timer.position)._data.endTime;
-    const nextStartTime = (p == null || p._next == null) ? 0 : player.video.findWord(player.timer.position)._next._data.startTime;
+    const nextStartTime = (p == null) ? 0 : (p._next == null) ? 999999 : player.video.findWord(player.timer.position)._next._data.startTime;
     if (nextStartTime - nowEndTime >= 1000) {
       whileTimeStart = nowEndTime;
       whileTimeEnd = nextStartTime;
