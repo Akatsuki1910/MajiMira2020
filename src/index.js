@@ -182,25 +182,6 @@ const stats = new Stats();
 stats.showPanel(0);
 document.body.appendChild(stats.dom);
 
-// const loader = new GLTFLoader();
-// let publicVrm;
-// loader.crossOrigin = 'anonymous';
-// loader.load(
-// 	'./models/miku.vrm',
-// 	( gltf ) => {
-//     VRMUtils.removeUnnecessaryJoints( gltf.scene );
-// 		VRM.from( gltf ).then( ( vrm ) => {
-// 			scene.add( vrm.scene );
-//       vrm.scene.rotation.y = Math.PI;
-//       publicVrm=vrm;
-// 		} );
-// 	},
-// 	( progress ) => console.log( 'Loading model...', 100.0 * ( progress.loaded / progress.total ), '%' ),
-// 	( error ) => console.error( error )
-// );
-
-
-
 createMoon(scene);
 createStar(scene);
 const stone = createStone(scene)
