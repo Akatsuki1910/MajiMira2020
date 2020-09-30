@@ -5,6 +5,9 @@ https://akatsuki1910.github.io/MajiMira2020/dist/
 初音ミク「マジカルミライ 2020」プログラミング・コンテスト  
 https://magicalmirai.com/2020/procon/
 
+textalive  
+https://developer.textalive.jp/packages/textalive-app-api/
+
 ## 素材
 おんだ式ミクさん  
 https://bowlroll.net/file/14158

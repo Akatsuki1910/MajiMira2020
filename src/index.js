@@ -56,10 +56,10 @@ const rewindBtn = document.querySelector("#rewind");
 function onAppReady(app) {
   if (!app.managed) {
     document.querySelector("#control").style.display = "block";
-    playBtn.addEventListener("click", () => onPlay());
+    playBtn.addEventListener("click", () => ly.onPlay());
     jumpBtn.addEventListener("click", () => player.video && player.requestMediaSeek(player.video.firstPhrase.startTime));
     pauseBtn.addEventListener("click", () => player.video && player.requestPause());
-    rewindBtn.addEventListener("click", () => player.video && player.requestMediaSeek(0));
+    rewindBtn.addEventListener("click", () => player.video && player.requestMediaSeek(190000));
   }
   if (!app.songUrl) {
     player.createFromSongUrl("https://www.youtube.com/watch?v=XSLhsjepelI");
@@ -70,7 +70,7 @@ function onTimerReady() {
   // アーティスト名 player.data.song.artist.name
   // 曲名 player.data.song.name
 
-  console.log(player.data.songMap)
+  console.log(player.video)
 
   document
     .querySelectorAll("button")
@@ -90,33 +90,26 @@ function onTimerReady() {
 
 function onTimeUpdate(position) {
 
-  const beat = player.findBeat(position);
-  stats.begin();
-  effectmain();
-  ly.animation(lyricesTextFunc());
-  stats.end();
+  // const beat = player.findBeat(position);
+  // stats.begin();
+  // effectmain();
+  // ly.animation(lyricesTextFunc());
+  // stats.end();
   // console.log(beat) // beat
-  console.log(player.timer.position)
-  if (!beat) {
-    return;
-  }
+  // if (!beat) {
+  //   return;
+  // }
+  // console.log(player.timer.position)
 }
 
 function onThrottledTimeUpdate(position) {
   // positionEl.textContent = String(Math.floor(position)); //経過時間
 }
 
-let playFlg = false;
-
-function onPlay() {
-  player.video && player.requestPlay();
-  ly.timer = 0;
-  playFlg = true;
-}
-
 let lyricesText = "ここに歌詞";
 
 function animatePhrase(now, unit) {
+  console.log(unit);
   if (unit.contains(now)) {
     lyricesText = unit.text; //歌詞
   }
@@ -129,8 +122,10 @@ const ly = new LYRICS(width, height, player);
 
 function animate() {
   requestAnimationFrame(animate);
+  stats.begin();
   effectmain();
   ly.animation(lyricesTextFunc());
+  stats.end();
 }
 
 let whileTimeStart;
@@ -141,7 +136,7 @@ function lyricesTextFunc() {
     const p = player.video.findWord(player.timer.position);
     const nowEndTime = (p == null) ? 0 : player.video.findWord(player.timer.position)._data.endTime;
     const nextStartTime = (p == null) ? 0 : (p._next == null) ? 999999 : player.video.findWord(player.timer.position)._next._data.startTime;
-    if (nextStartTime - nowEndTime >= 1000) {
+    if (nextStartTime - nowEndTime >= 5000) {
       whileTimeStart = nowEndTime;
       whileTimeEnd = nextStartTime;
     }
