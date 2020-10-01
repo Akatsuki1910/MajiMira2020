@@ -6,7 +6,9 @@ module.exports = {
   entry: `./src/index.js`,
   watch: true,
   cache: true,
-  node: { fs: 'empty'},
+  node: {
+    fs: 'empty'
+  },
   output: {
     filename: "main.js",
     path: path.resolve(__dirname, 'dist')
@@ -32,12 +34,17 @@ module.exports = {
           ]
         }
       }]
+    }, {
+      test: /\.json$/,
+      loader: "json-loader",
+      type: "javascript/auto"
     }]
   },
-  plugins:[
+  plugins: [
     new webpack.ProvidePlugin({
       THREE: 'three',
-      Ammo: 'ammo.js'
+      Ammo: 'ammo.js',
+      _: "lodash"
     }),
   ]
 };

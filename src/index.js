@@ -27,6 +27,7 @@ import {
 import {
   createMMD
 } from './mmd';
+import jsonData from "./data.json";
 
 
 /*
@@ -67,10 +68,8 @@ function onAppReady(app) {
 }
 
 function onTimerReady() {
-  // アーティスト名 player.data.song.artist.name
-  // 曲名 player.data.song.name
 
-  console.log(player.video)
+  // console.log(player.video)
 
   document
     .querySelectorAll("button")
@@ -85,11 +84,11 @@ function onTimerReady() {
   }
 
   console.log("All load complete");
+  // console.log(data);
   ly.onReady();
 }
 
 function onTimeUpdate(position) {
-
   // const beat = player.findBeat(position);
   // stats.begin();
   // effectmain();
@@ -107,12 +106,16 @@ function onThrottledTimeUpdate(position) {
 }
 
 let lyricesText = "ここに歌詞";
+let lyricesDataChar = {};
+let lyricesDataNum = -1;
+let lyricesDataCou = 0;
 
 function animatePhrase(now, unit) {
-  console.log(player.video.findChar(player.timer.position)._data.char);
-  if (unit.contains(now)) {
-    lyricesText = unit.text; //歌詞
-  }
+  // console.log(player.video.findChar(player.timer.position)._data.char);
+  // console.log(jsonData.data[0].lyric)
+  // if (unit.contains(now)) {
+  //   lyricesText = unit.text; //歌詞
+  // }
 };
 
 //pixi
@@ -132,10 +135,25 @@ let whileTimeStart;
 let whileTimeEnd;
 
 function lyricesTextFunc() {
-  if (ly.status > 0) {
+  if (ly.status > 1) {
+    const pc = player.video.findChar(player.timer.position);
+    if (pc != null) {
+      const charData = pc._data;
+      if (!_.isEqual(lyricesDataChar, charData)) {
+        lyricesDataChar = charData;
+        console.log(charData,lyricesDataCou)
+        if (lyricesDataCou == 0) {
+          lyricesDataNum++;
+          lyricesText = jsonData.data[lyricesDataNum].lyric;
+          lyricesDataCou = lyricesText.length+jsonData.data[lyricesDataNum].num;
+        }
+        lyricesDataCou--;
+      }
+    }
+
     const p = player.video.findWord(player.timer.position);
-    const nowEndTime = (p == null) ? 0 : player.video.findWord(player.timer.position)._data.endTime;
-    const nextStartTime = (p == null) ? 0 : (p._next == null) ? 999999 : player.video.findWord(player.timer.position)._next._data.startTime;
+    const nowEndTime = (p == null) ? 0 : p._data.endTime;
+    const nextStartTime = (p == null) ? 0 : (p._next == null) ? 999999 : p._next._data.startTime;
     if (nextStartTime - nowEndTime >= 5000) {
       whileTimeStart = nowEndTime;
       whileTimeEnd = nextStartTime;
