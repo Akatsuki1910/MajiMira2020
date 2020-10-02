@@ -19,6 +19,16 @@ export default class {
 		this.h = h;
 		this.timer = 0;
 		this.fontSize = 80;
+
+		const gli = 2;
+		this.filter = new GlitchFilter({
+			red: [gli * Math.cos(0), gli * Math.sin(0)],
+			green: [gli * Math.cos(Math.PI * 2 / 3), gli * Math.sin(Math.PI * 2 / 3)],
+			blue: [gli * Math.cos(Math.PI * 2 * 2 / 3), gli * Math.sin(Math.PI * 2 * 2 / 3)],
+			fillMode: 1,
+			offset: 2,
+			slices: 5
+		});
 		document.getElementById("pixiview").appendChild(this.renderer.view);
 
 		this.createLyric();
@@ -75,15 +85,6 @@ export default class {
 		};
 		this.textobj = new PIXI.Text(this.word, this.style);
 
-		const gli = 2;
-		this.filter = new GlitchFilter({
-			red: [gli * Math.cos(0), gli * Math.sin(0)],
-			green: [gli * Math.cos(Math.PI * 2 / 3), gli * Math.sin(Math.PI * 2 / 3)],
-			blue: [gli * Math.cos(Math.PI * 2 * 2 / 3), gli * Math.sin(Math.PI * 2 * 2 / 3)],
-			fillMode: 1,
-			offset: 3,
-			slices: 5
-		});
 		this.textobj.filters = [this.filter];
 
 		this.stage.addChild(this.textobj);
@@ -143,6 +144,7 @@ export default class {
 			fontWeight: "bold"
 		};
 		this.songTitleobj = new PIXI.Text(this.songTitle, this.songTitleStyle);
+		this.generateGlitch(this.songTitleobj);
 		this.stage.addChild(this.songTitleobj);
 		this.songTitleobj.position.set(this.w / 2 - (this.songTitleobj.text.length) * songTitleFontSize / 2, this.h / 2 - songTitleFontSize - 30);
 
@@ -154,6 +156,7 @@ export default class {
 			fontWeight: "bold"
 		};
 		this.songArtistobj = new PIXI.Text(this.songArtist, this.songArtistStyle);
+		this.generateGlitch(this.songArtistobj);
 		this.stage.addChild(this.songArtistobj);
 		this.songArtistobj.position.set(this.w / 2 - (this.songTitleobj.text.length) * this.fontSize / 2 - 60, this.h / 2 + 50);
 
@@ -165,6 +168,7 @@ export default class {
 			fontWeight: "bold"
 		};
 		this.songMVobj = new PIXI.Text(this.songMV, this.songMVStyle);
+		this.generateGlitch(this.songMVobj);
 		this.stage.addChild(this.songMVobj);
 		this.songMVobj.position.set(this.w / 2 - 20, this.h / 2 + 50);
 
@@ -177,5 +181,10 @@ export default class {
 		if (alpha <= 0) alpha = 0;
 		this.square.alpha = alpha;
 		this.titleobj.alpha = alpha;
+	}
+
+	generateGlitch(textObj) {
+		textObj.text = " " + textObj.text + " ";
+		textObj.filters = [this.filter];
 	}
 }

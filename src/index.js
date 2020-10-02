@@ -29,7 +29,7 @@ import {
 } from './mmd';
 import jsonData from "./data.json";
 
-
+window.addEventListener("resize", () => location.reload());
 /*
   textalive-app-api
  */
@@ -89,16 +89,20 @@ function onTimerReady() {
 }
 
 function onTimeUpdate(position) {
-  // const beat = player.findBeat(position);
-  // stats.begin();
-  // effectmain();
-  // ly.animation(lyricesTextFunc());
-  // stats.end();
-  // console.log(beat) // beat
-  // if (!beat) {
-  //   return;
+  // const pc = player.video.findChar(position);
+  // if (pc != null) {
+  //   const charData = pc._data;
+  //   if (!_.isEqual(lyricesDataChar, charData)) {
+  //     lyricesDataChar = charData;
+  //     console.log(charData, lyricesDataCou)
+  //     if (lyricesDataCou == 0) {
+  //       lyricesDataNum++;
+  //       lyricesText = jsonData.data[lyricesDataNum].lyric;
+  //       lyricesDataCou = lyricesText.length + jsonData.data[lyricesDataNum].num;
+  //     }
+  //     lyricesDataCou--;
+  //   }
   // }
-  // console.log(player.timer.position)
 }
 
 function onThrottledTimeUpdate(position) {
@@ -107,7 +111,7 @@ function onThrottledTimeUpdate(position) {
 
 let lyricesText = "ここに歌詞";
 let lyricesDataChar = {};
-let lyricesDataNum = -1;
+let lyricesDataNum = 0;
 let lyricesDataCou = 0;
 
 function animatePhrase(now, unit) {
@@ -136,19 +140,9 @@ let whileTimeEnd;
 
 function lyricesTextFunc() {
   if (ly.status > 1) {
-    const pc = player.video.findChar(player.timer.position);
-    if (pc != null) {
-      const charData = pc._data;
-      if (!_.isEqual(lyricesDataChar, charData)) {
-        lyricesDataChar = charData;
-        console.log(charData,lyricesDataCou)
-        if (lyricesDataCou == 0) {
-          lyricesDataNum++;
-          lyricesText = jsonData.data[lyricesDataNum].lyric;
-          lyricesDataCou = lyricesText.length+jsonData.data[lyricesDataNum].num;
-        }
-        lyricesDataCou--;
-      }
+    if (lyricesDataNum != jsonData.data.length && player.timer.position >= jsonData.data[lyricesDataNum].startTime) {
+      lyricesText = jsonData.data[lyricesDataNum].lyric;
+      lyricesDataNum++;
     }
 
     const p = player.video.findWord(player.timer.position);
@@ -177,7 +171,7 @@ rendererThree.setSize(width, height);
 const scene = new THREE.Scene();
 
 const camera = new THREE.PerspectiveCamera(45, width / height, 1, 10000);
-camera.position.set(0, 30, 300);
+camera.position.set(0, 30, 200);
 camera.lookAt(new THREE.Vector3(0, 0, 0));
 
 const light = new THREE.PointLight(0xFFFFFF, 2, 1000, 1.0);
@@ -196,7 +190,7 @@ stats.showPanel(0);
 document.body.appendChild(stats.dom);
 
 createMoon(scene);
-createStar(scene);
+const star = createStar(scene);
 const stone = createStone(scene)
 stone.scale.set(3, 3, 3)
 stone.rotateY(Math.PI / 6)
@@ -207,6 +201,7 @@ rendererThree.render(scene, camera);
 
 function effectmain() {
   controls.update();
+  star.rotation.y += 0.0005;
   rendererThree.render(scene, camera);
 }
 animate();

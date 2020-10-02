@@ -12,7 +12,7 @@ export function createMoon(scene) {
 				map: texture
 			})
 		);
-		mesh.position.set(window.innerWidth / 10, window.innerHeight / 10, 0)
+		mesh.position.set(window.innerWidth / 20, window.innerHeight / 20, 0)
 		scene.add(mesh);
 	});
 	// return mesh;

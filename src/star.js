@@ -15,4 +15,5 @@ export function createStar(scene) {
 	});
 	const mesh = new THREE.Points(geometry, material);
 	scene.add(mesh);
+	return mesh;
 }
