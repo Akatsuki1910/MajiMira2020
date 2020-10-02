@@ -5,14 +5,6 @@ import {
 import {
   OrbitControls
 } from "three/examples/jsm/controls/OrbitControls";
-import {
-  GLTFLoader
-} from 'three/examples/jsm/loaders/GLTFLoader';
-import {
-  VRM,
-  VRMUtils,
-  VRMSchema
-} from '@pixiv/three-vrm';
 import LYRICS from './lyrics';
 import {
   createMoon
@@ -89,20 +81,7 @@ function onTimerReady() {
 }
 
 function onTimeUpdate(position) {
-  // const pc = player.video.findChar(position);
-  // if (pc != null) {
-  //   const charData = pc._data;
-  //   if (!_.isEqual(lyricesDataChar, charData)) {
-  //     lyricesDataChar = charData;
-  //     console.log(charData, lyricesDataCou)
-  //     if (lyricesDataCou == 0) {
-  //       lyricesDataNum++;
-  //       lyricesText = jsonData.data[lyricesDataNum].lyric;
-  //       lyricesDataCou = lyricesText.length + jsonData.data[lyricesDataNum].num;
-  //     }
-  //     lyricesDataCou--;
-  //   }
-  // }
+
 }
 
 function onThrottledTimeUpdate(position) {
@@ -115,8 +94,6 @@ let lyricesDataNum = 0;
 let lyricesDataCou = 0;
 
 function animatePhrase(now, unit) {
-  // console.log(player.video.findChar(player.timer.position)._data.char);
-  // console.log(jsonData.data[0].lyric)
   // if (unit.contains(now)) {
   //   lyricesText = unit.text; //歌詞
   // }
