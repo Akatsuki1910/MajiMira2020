@@ -19,7 +19,7 @@ var helper = new MMDAnimationHelper({
 	afterglow: 2.0,
 	resetPhysicsOnLoop: true
 });
-export function createMMD(scene) {
+export default function createMMD(scene) {
 	var animations = [];
 	let meshPub;
 

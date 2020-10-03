@@ -1,4 +1,4 @@
-export function createStar(scene) {
+export default function createStar(scene) {
 	const geometry = new THREE.Geometry();
 	const RANGE = 10000;
 	const LENGTH = 100000;

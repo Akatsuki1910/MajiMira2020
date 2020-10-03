@@ -44,7 +44,10 @@ module.exports = {
     new webpack.ProvidePlugin({
       THREE: 'three',
       Ammo: 'ammo.js',
-      _: "lodash"
+      _: "lodash",
+      PIXI: 'pixi.js',
+      jsonData: "./data.json",
+      Stats: 'stats.js',
     }),
   ]
 };

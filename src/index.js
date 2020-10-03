@@ -6,20 +6,10 @@ import {
   OrbitControls
 } from "three/examples/jsm/controls/OrbitControls";
 import LYRICS from './lyrics';
-import {
-  createMoon
-} from './moon';
-import {
-  createStar
-} from './star';
-import Stats from 'stats.js';
-import {
-  createStone
-} from './stone';
-import {
-  createMMD
-} from './mmd';
-import jsonData from "./data.json";
+import createMoon from './moon';
+import createStar from './star';
+import createStone from './stone';
+import createMMD from './mmd';
 
 window.addEventListener("resize", () => location.reload());
 /*
@@ -88,10 +78,8 @@ function onThrottledTimeUpdate(position) {
   // positionEl.textContent = String(Math.floor(position)); //経過時間
 }
 
-let lyricesText = "ここに歌詞";
-let lyricesDataChar = {};
+let lyricesText = ""; //ここに歌詞
 let lyricesDataNum = 0;
-let lyricesDataCou = 0;
 
 function animatePhrase(now, unit) {
   // if (unit.contains(now)) {
@@ -108,12 +96,13 @@ function animate() {
   requestAnimationFrame(animate);
   stats.begin();
   effectmain();
-  ly.animation(lyricesTextFunc());
+  ly.animation(lyricesTextFunc(), lyricesDataNum);
   stats.end();
 }
 
 let whileTimeStart;
 let whileTimeEnd;
+// let ccmem = {};
 
 function lyricesTextFunc() {
   if (ly.status > 1) {
@@ -121,6 +110,11 @@ function lyricesTextFunc() {
       lyricesText = jsonData.data[lyricesDataNum].lyric;
       lyricesDataNum++;
     }
+
+    // const c = player.video.findChar(player.timer.position);
+    // const cc = (c == null) ? "" : c._data;
+    // if (cc != ccmem) console.log(cc);
+    // ccmem = cc;
 
     const p = player.video.findWord(player.timer.position);
     const nowEndTime = (p == null) ? 0 : p._data.endTime;

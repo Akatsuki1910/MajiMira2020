@@ -1,4 +1,4 @@
-export function createStone(scene) {
+export default function createStone(scene) {
 	const wrap = new THREE.Group();
 	const p = 6;
 	const geometry = new THREE.CylinderGeometry(5, 5, 7, p);

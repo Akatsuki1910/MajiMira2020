@@ -1,7 +1,6 @@
 import {
 	GlitchFilter
 } from '@pixi/filter-glitch';
-import * as PIXI from 'pixi.js';
 export default class {
 	constructor(w, h, p) {
 		this.stage = new PIXI.Container();
@@ -20,6 +19,16 @@ export default class {
 		this.timer = 0;
 		this.fontSize = 80;
 
+		this.easeStartTime = 0;
+		this.easeFlg = 0;
+		this.easeArr = [
+			[31, 0],
+			[34, 1],
+			// [1, 0],
+			// [5, 1],
+		];
+		this.easeArrNum = 0;
+
 		const gli = 2;
 		this.filter = new GlitchFilter({
 			red: [gli * Math.cos(0), gli * Math.sin(0)],
@@ -31,8 +40,8 @@ export default class {
 		});
 		document.getElementById("pixiview").appendChild(this.renderer.view);
 
-		this.createLyric();
 		this.firstContent();
+		this.createLyric();
 	}
 
 	get status() {
@@ -54,9 +63,7 @@ export default class {
 		this.statusFlg = 2;
 	}
 
-	animation(lyricesText) {
-		this.textobj.text = "　" + lyricesText + "　";
-		this.textobj.position.set(this.w / 2 - (this.textobj.text.length) * this.fontSize / 2, this.h / 2 - this.fontSize / 2);
+	animation(lyricesText, lynum) {
 		if (this.statusFlg == 1) {
 			this.titleobj.text = "Start";
 			this.titleobj.position.set(this.w / 2 - (this.titleobj.text.length / 2) * this.fontSize / 2, this.h / 2 - this.fontSize / 2);
@@ -67,11 +74,23 @@ export default class {
 			}
 			this.titleSong(this.player.timer.position);
 
-			// console.log(this.timer);
+			if (!this.easeFlg) {
+				if (this.easeArrNum != this.easeArr.length) {
+					if (lynum == this.easeArr[this.easeArrNum][0]) {
+						console.log(1);
+						this.easeStartTime = this.timer;
+						this.easeFlg = true;
+						this.easeArrNum++;
+					}
+				}
+			}
+			this.easeBlock((this.timer - this.easeStartTime) / 200, this.easeArr[(this.easeArrNum == 0) ? 0 : this.easeArrNum - 1][1])
 			this.timer++;
 		}
 
 		this.contentFade(this.player.timer.position)
+		this.textobj.text = "　" + lyricesText + "　";
+		this.textobj.position.set(this.w / 2 - (this.textobj.text.length) * this.fontSize / 2, this.h / 2 - this.fontSize / 2);
 		this.renderer.render(this.stage);
 	}
 
@@ -84,9 +103,7 @@ export default class {
 			fontWeight: "bold"
 		};
 		this.textobj = new PIXI.Text(this.word, this.style);
-
 		this.textobj.filters = [this.filter];
-
 		this.stage.addChild(this.textobj);
 	}
 
@@ -97,7 +114,6 @@ export default class {
 		this.square.endFill();
 
 		this.stage.addChild(this.square);
-		this.square.zIndex = 5;
 
 		this.title = "Now Loading...";
 		this.titleStyle = {
@@ -108,7 +124,6 @@ export default class {
 		};
 		this.titleobj = new PIXI.Text(this.title, this.titleStyle);
 		this.stage.addChild(this.titleobj);
-		this.titleobj.zIndex = 6;
 		this.titleobj.position.set(this.w / 2 - (this.titleobj.text.length / 2) * this.fontSize / 2, this.h / 2 - this.fontSize / 2);
 		this.titleobj.interactive = true;
 		this.titleobj.on('click', () => {
@@ -172,19 +187,34 @@ export default class {
 		this.stage.addChild(this.songMVobj);
 		this.songMVobj.position.set(this.w / 2 - 20, this.h / 2 + 50);
 
-		this.titleSong(0)
+		this.titleSong(0);
 	}
 
 	contentFade(time) {
 		const timer = 7000;
 		let alpha = (timer - time) / timer;
-		if (alpha <= 0) alpha = 0;
-		this.square.alpha = alpha;
-		this.titleobj.alpha = alpha;
+		if (alpha >= 0) {
+			this.square.alpha = alpha;
+			this.titleobj.alpha = alpha;
+		}
 	}
 
 	generateGlitch(textObj) {
 		textObj.text = " " + textObj.text + " ";
 		textObj.filters = [this.filter];
+	}
+
+	easeBlock(time, s) {
+		if (this.easeFlg) {
+			this.square.alpha = 1;
+			const eoe = this.easeOutExpo(time);
+			const p = (s == 0) ? eoe : (1 - eoe);
+			this.square.width = this.w * p;
+			if (eoe >= 1) this.easeFlg = false;
+		}
+	}
+
+	easeOutExpo(x) {
+		return x === 1 ? 1 : 1 - Math.pow(2, -10 * x);
 	}
 }
