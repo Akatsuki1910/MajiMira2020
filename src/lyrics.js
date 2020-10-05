@@ -22,8 +22,10 @@ export default class {
 		this.easeStartTime = 0;
 		this.easeFlg = 0;
 		this.easeArr = [
+			[11, 2],
 			[31, 0],
 			[34, 1],
+			[44, 2],
 			// [1, 0],
 			// [5, 1],
 		];
@@ -84,7 +86,7 @@ export default class {
 					}
 				}
 			}
-			this.easeBlock((this.timer - this.easeStartTime) / 200, this.easeArr[(this.easeArrNum == 0) ? 0 : this.easeArrNum - 1][1])
+			this.easeBlock((this.timer - this.easeStartTime) / 100, this.easeArr[(this.easeArrNum == 0) ? 0 : this.easeArrNum - 1][1])
 			this.timer++;
 		}
 
@@ -207,6 +209,10 @@ export default class {
 	easeBlock(time, s) {
 		if (this.easeFlg) {
 			this.square.alpha = 1;
+			if (s == 2) {
+				s = (time < 0.5) ? 0 : 1;
+				time = (time - 0.5 * s) * 2;
+			}
 			const eoe = this.easeOutExpo(time);
 			const p = (s == 0) ? eoe : (1 - eoe);
 			this.square.width = this.w * p;
