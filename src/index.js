@@ -142,7 +142,7 @@ rendererThree.setSize(width, height);
 const scene = new THREE.Scene();
 
 const camera = new THREE.PerspectiveCamera(45, width / height, 1, 10000);
-camera.position.set(0, 30, 200);
+camera.position.set(-100, 70, -270);
 camera.lookAt(new THREE.Vector3(0, 0, 0));
 
 const light = new THREE.PointLight(0xFFFFFF, 2, 1000, 1.0);
@@ -172,7 +172,6 @@ rendererThree.render(scene, camera);
 
 function effectmain() {
   controls.update();
-  star.rotation.y += 0.0005;
   rendererThree.render(scene, camera);
 }
 animate();

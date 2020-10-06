@@ -63,6 +63,11 @@ export default class {
 		this.player.video && this.player.requestPlay();
 		this.timer = 0;
 		this.statusFlg = 2;
+		const elements = document.getElementsByTagName('canvas');
+		for (let i = 0; i < elements.length; i++) {
+			elements[i].style.pointerEvents = "none";
+		}
+		document.getElementById("ThreeCanvas").style.pointerEvents = "auto";
 	}
 
 	animation(lyricesText, lynum) {
