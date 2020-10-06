@@ -10,6 +10,7 @@ import createMoon from './moon';
 import createStar from './star';
 import createStone from './stone';
 import createMMD from './mmd';
+import createCircleStone from './circleStone';
 
 window.addEventListener("resize", () => location.reload());
 /*
@@ -146,7 +147,7 @@ camera.position.set(-100, 70, -270);
 camera.lookAt(new THREE.Vector3(0, 0, 0));
 
 const light = new THREE.PointLight(0xFFFFFF, 2, 1000, 1.0);
-light.position.set(0, 100, 500);
+light.position.set(-300, 50, 100);
 scene.add(light);
 
 //debug
@@ -162,9 +163,10 @@ document.body.appendChild(stats.dom);
 
 createMoon(scene);
 const star = createStar(scene);
-const stone = createStone(scene)
-stone.scale.set(3, 3, 3)
-stone.rotateY(Math.PI / 6)
+const stone = createStone(scene);
+createCircleStone(scene);
+stone.scale.set(3, 3, 3);
+stone.rotateY(Math.PI / 6);
 createMMD(scene);
 
 // first time

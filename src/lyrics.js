@@ -84,7 +84,7 @@ export default class {
 			if (!this.easeFlg) {
 				if (this.easeArrNum != this.easeArr.length) {
 					if (lynum == this.easeArr[this.easeArrNum][0]) {
-						console.log(1);
+						// console.log(1);
 						this.easeStartTime = this.timer;
 						this.easeFlg = true;
 						this.easeArrNum++;
