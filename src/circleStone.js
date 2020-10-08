@@ -54,7 +54,7 @@ function createGeometry(pointArr, pointSlice) {
 		geometry.vertices.push(new THREE.Vector3(r[0], r[1], r[2]))
 	});
 
-	console.log(geometry.vertices)
+	// console.log(geometry.vertices)
 
 	for (let i = 1; i <= pointSlice; i++) {
 		const a = i;

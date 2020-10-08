@@ -11,6 +11,7 @@ import createStar from './star';
 import createStone from './stone';
 import createMMD from './mmd';
 import createCircleStone from './circleStone';
+import createMagicCircle from './createMagicCircle';
 
 window.addEventListener("resize", () => location.reload());
 /*
@@ -128,6 +129,15 @@ function lyricesTextFunc() {
     if (whileTimeStart < nowTime && nowTime < whileTimeEnd) {
       lyricesText = "";
     }
+
+    switch (lyricesDataNum) {
+      case 11:
+        circleStone.visible = true;
+        break;
+      case 34:
+        magicCircle.visible = true;
+        break;
+    }
   }
   return lyricesText;
 }
@@ -143,8 +153,8 @@ rendererThree.setSize(width, height);
 const scene = new THREE.Scene();
 
 const camera = new THREE.PerspectiveCamera(45, width / height, 1, 10000);
-camera.position.set(-100, 70, -270);
-camera.lookAt(new THREE.Vector3(0, 0, 0));
+camera.position.set(-150, 30, -175);
+camera.rotation.set(0,-2.7,0);
 
 const light = new THREE.PointLight(0xFFFFFF, 2, 1000, 1.0);
 light.position.set(-300, 50, 100);
@@ -155,8 +165,8 @@ scene.add(light);
 // scene.add(axesHelper);
 // const gridHelper = new THREE.GridHelper(1000, 1000);
 // scene.add(gridHelper);
-const controls = new OrbitControls(camera, rendererThree.domElement);
-controls.update();
+// const controls = new OrbitControls(camera, rendererThree.domElement);
+// controls.update();
 const stats = new Stats();
 stats.showPanel(0);
 document.body.appendChild(stats.dom);
@@ -164,7 +174,11 @@ document.body.appendChild(stats.dom);
 createMoon(scene);
 const star = createStar(scene);
 const stone = createStone(scene);
-createCircleStone(scene);
+const magicCircle = createMagicCircle(scene);
+magicCircle.position.y=-20;
+magicCircle.visible = false;
+const circleStone = createCircleStone(scene);
+circleStone.visible = false;
 stone.scale.set(3, 3, 3);
 stone.rotateY(Math.PI / 6);
 createMMD(scene);
@@ -173,7 +187,9 @@ createMMD(scene);
 rendererThree.render(scene, camera);
 
 function effectmain() {
-  controls.update();
+  // controls.update();
+  circleStone.rotation.y -= 0.005;
+  magicCircle.rotation.y += 0.005;
   rendererThree.render(scene, camera);
 }
 animate();
