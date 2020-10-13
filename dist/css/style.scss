@@ -1,3 +1,8 @@
+@font-face {
+  font-family: "tegaki";
+  src: url(./font/851H-kktt_004.ttf) format("truetype");
+}
+
 body {
   margin: 0;
   padding: 0;
@@ -6,12 +11,14 @@ body {
 
 .canvas-wrapper {
   position: relative;
+
   canvas {
     position: absolute;
     top: 0;
     left: 0;
     // pointer-events: none;
   }
+
   // #ThreeCanvas{
   //   pointer-events: auto;
   // }
@@ -42,6 +49,7 @@ body {
   bottom: 30px;
   padding: 5px;
   background: rgba(150, 10, 10, 0.2);
+
   button {
     margin-right: 5px;
 

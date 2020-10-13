@@ -1,3 +1,8 @@
+@font-face {
+  font-family: "tegaki";
+  src: url(./font/851H-kktt_004.ttf) format("truetype");
+}
+
 body {
   margin: 0;
   padding: 0;

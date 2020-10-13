@@ -12,6 +12,7 @@ import createStone from './stone';
 import createMMD from './mmd';
 import createCircleStone from './circleStone';
 import createMagicCircle from './createMagicCircle';
+PIXI.TextMetrics.BASELINE_SYMBOL += "あ｜";
 
 window.addEventListener("resize", () => location.reload());
 /*

@@ -17,15 +17,15 @@ export default class {
 		this.w = w;
 		this.h = h;
 		this.timer = 0;
-		this.fontSize = 80;
+		this.fontSize = 100;
 
 		this.easeStartTime = 0;
 		this.easeFlg = 0;
 		this.easeArr = [
-			[11, 2],
-			[31, 0],
-			[34, 1],
-			[46, 2],
+			[10, 2],
+			[30, 0],
+			[33, 1],
+			[45, 2],
 			// [1, 0],
 			// [5, 1],
 		];
@@ -83,8 +83,14 @@ export default class {
 
 			if (!this.easeFlg) {
 				if (this.easeArrNum != this.easeArr.length) {
-					if (lynum == this.easeArr[this.easeArrNum][0]) {
-						// console.log(1);
+					let misalignmentTime = 0;
+					switch(this.easeArr[this.easeArrNum][1]){
+						case 0: misalignmentTime = 0;break;
+						case 1: misalignmentTime = 50;break;
+						case 2: misalignmentTime = -200;break;
+					}
+					if (this.player.timer.position > jsonData.data[this.easeArr[this.easeArrNum][0]].startTime + misalignmentTime) {
+						console.log(misalignmentTime);
 						this.easeStartTime = this.timer;
 						this.easeFlg = true;
 						this.easeArrNum++;
@@ -104,7 +110,7 @@ export default class {
 	createLyric() {
 		this.word = "";
 		this.style = {
-			fontFamily: 'Arial',
+			fontFamily: 'tegaki',
 			fontSize: this.fontSize + "px",
 			fill: 'white',
 			fontWeight: "bold"
@@ -116,7 +122,7 @@ export default class {
 
 	firstContent() {
 		this.square = new PIXI.Graphics();
-		this.square.beginFill(0xff00ff);
+		this.square.beginFill(0x000000);
 		this.square.drawRect(0, 0, this.w, this.h);
 		this.square.endFill();
 
@@ -124,7 +130,7 @@ export default class {
 
 		this.title = "Now Loading...";
 		this.titleStyle = {
-			fontFamily: 'Arial',
+			fontFamily: 'tegaki',
 			fontSize: this.fontSize + "px",
 			fill: 'white',
 			fontWeight: "bold"
@@ -160,7 +166,7 @@ export default class {
 		const songTitleFontSize = 100;
 		this.songTitle = this.player.data.song.name;
 		this.songTitleStyle = {
-			fontFamily: 'Arial',
+			fontFamily: 'tegaki',
 			fontSize: songTitleFontSize + "px",
 			fill: 'white',
 			fontWeight: "bold"
@@ -168,11 +174,11 @@ export default class {
 		this.songTitleobj = new PIXI.Text(this.songTitle, this.songTitleStyle);
 		this.generateGlitch(this.songTitleobj);
 		this.stage.addChild(this.songTitleobj);
-		this.songTitleobj.position.set(this.w / 2 - (this.songTitleobj.text.length) * songTitleFontSize / 2, this.h / 2 - songTitleFontSize - 30);
+		this.songTitleobj.position.set(this.w / 2 - (this.songTitleobj.text.length) * songTitleFontSize / 2 + 40, this.h / 2 - songTitleFontSize - 30);
 
 		this.songArtist = "Music : " + this.player.data.song.artist.name;
 		this.songArtistStyle = {
-			fontFamily: 'Arial',
+			fontFamily: 'tegaki',
 			fontSize: this.fontSize + "px",
 			fill: 'white',
 			fontWeight: "bold"
@@ -180,11 +186,11 @@ export default class {
 		this.songArtistobj = new PIXI.Text(this.songArtist, this.songArtistStyle);
 		this.generateGlitch(this.songArtistobj);
 		this.stage.addChild(this.songArtistobj);
-		this.songArtistobj.position.set(this.w / 2 - (this.songTitleobj.text.length) * this.fontSize / 2 - 60, this.h / 2 + 50);
+		this.songArtistobj.position.set(this.w / 2 - (this.songTitleobj.text.length) * this.fontSize / 2 - 100, this.h / 2 + 50);
 
 		this.songMV = "Movie : 暁の流星";
 		this.songMVStyle = {
-			fontFamily: 'Arial',
+			fontFamily: 'tegaki',
 			fontSize: this.fontSize + "px",
 			fill: 'white',
 			fontWeight: "bold"
@@ -192,7 +198,7 @@ export default class {
 		this.songMVobj = new PIXI.Text(this.songMV, this.songMVStyle);
 		this.generateGlitch(this.songMVobj);
 		this.stage.addChild(this.songMVobj);
-		this.songMVobj.position.set(this.w / 2 - 20, this.h / 2 + 50);
+		this.songMVobj.position.set(this.w / 2 - 50, this.h / 2 + 50);
 
 		this.titleSong(0);
 	}
