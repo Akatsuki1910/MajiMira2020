@@ -45,7 +45,7 @@ function onAppReady(app) {
     playBtn.addEventListener("click", () => ly.onPlay());
     jumpBtn.addEventListener("click", () => player.video && player.requestMediaSeek(player.video.firstPhrase.startTime));
     pauseBtn.addEventListener("click", () => player.video && player.requestPause());
-    rewindBtn.addEventListener("click", () => player.video && player.requestMediaSeek(190000));
+    rewindBtn.addEventListener("click", () => player.video && player.requestMediaSeek(130000));
   }
   if (!app.songUrl) {
     player.createFromSongUrl("https://www.youtube.com/watch?v=XSLhsjepelI");
@@ -105,6 +105,7 @@ function animate() {
 
 let whileTimeStart;
 let whileTimeEnd;
+let starRotation = false;
 // let ccmem = {};
 
 function lyricesTextFunc() {
@@ -137,6 +138,11 @@ function lyricesTextFunc() {
         break;
       case 34:
         magicCircle.visible = true;
+        star2.visible = true;
+        star3.visible = true;
+        break;
+      case 46:
+        starRotation = true;
         break;
     }
   }
@@ -155,7 +161,7 @@ const scene = new THREE.Scene();
 
 const camera = new THREE.PerspectiveCamera(45, width / height, 1, 10000);
 camera.position.set(-150, 30, -175);
-camera.rotation.set(0,-2.7,0);
+camera.rotation.set(0, -2.7, 0);
 
 const light = new THREE.PointLight(0xFFFFFF, 2, 1000, 1.0);
 light.position.set(-300, 50, 100);
@@ -174,9 +180,13 @@ document.body.appendChild(stats.dom);
 
 createMoon(scene);
 const star = createStar(scene);
+const star2 = createStar(scene, 0x00ff00);
+const star3 = createStar(scene, 0x0000ff);
+star2.visible = false;
+star3.visible = false;
 const stone = createStone(scene);
 const magicCircle = createMagicCircle(scene);
-magicCircle.position.y=-20;
+magicCircle.position.y = -20;
 magicCircle.visible = false;
 const circleStone = createCircleStone(scene);
 circleStone.visible = false;
@@ -191,6 +201,11 @@ function effectmain() {
   // controls.update();
   circleStone.rotation.y -= 0.005;
   magicCircle.rotation.y += 0.005;
+  if (starRotation) {
+    star.rotation.z += 0.001;
+    star2.rotation.z -= 0.0005;
+    star3.rotation.z += 0.0005;
+  }
   rendererThree.render(scene, camera);
 }
 animate();

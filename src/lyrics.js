@@ -87,7 +87,7 @@ export default class {
 					switch(this.easeArr[this.easeArrNum][1]){
 						case 0: misalignmentTime = 0;break;
 						case 1: misalignmentTime = 50;break;
-						case 2: misalignmentTime = -200;break;
+						case 2: misalignmentTime = -250;break;
 					}
 					if (this.player.timer.position > jsonData.data[this.easeArr[this.easeArrNum][0]].startTime + misalignmentTime) {
 						console.log(misalignmentTime);
