@@ -26,8 +26,6 @@ export default class {
 			[30, 0],
 			[33, 1],
 			[45, 2],
-			// [1, 0],
-			// [5, 1],
 		];
 		this.easeArrNum = 0;
 
@@ -70,9 +68,9 @@ export default class {
 		document.getElementById("ThreeCanvas").style.pointerEvents = "auto";
 	}
 
-	animation(lyricesText, lynum) {
+	animation(lyricesText) {
 		if (this.statusFlg == 1) {
-			this.titleobj.text = "Start";
+			this.titleobj.text = "Ｙ(๑°口°๑)";
 			this.titleobj.position.set(this.w / 2 - (this.titleobj.text.length / 2) * this.fontSize / 2, this.h / 2 - this.fontSize / 2);
 		}
 		if (this.statusFlg == 2) {
@@ -90,7 +88,6 @@ export default class {
 						case 2: misalignmentTime = -250;break;
 					}
 					if (this.player.timer.position > jsonData.data[this.easeArr[this.easeArrNum][0]].startTime + misalignmentTime) {
-						console.log(misalignmentTime);
 						this.easeStartTime = this.timer;
 						this.easeFlg = true;
 						this.easeArrNum++;
@@ -128,9 +125,8 @@ export default class {
 
 		this.stage.addChild(this.square);
 
-		this.title = "Now Loading...";
+		this.title = "Ｙ(๑-口-๑)";
 		this.titleStyle = {
-			fontFamily: 'tegaki',
 			fontSize: this.fontSize + "px",
 			fill: 'white',
 			fontWeight: "bold"
@@ -140,7 +136,6 @@ export default class {
 		this.titleobj.position.set(this.w / 2 - (this.titleobj.text.length / 2) * this.fontSize / 2, this.h / 2 - this.fontSize / 2);
 		this.titleobj.interactive = true;
 		this.titleobj.on('click', () => {
-			console.log("text click");
 			if (this.statusFlg == 1) {
 				this.onPlay();
 			}
@@ -148,8 +143,6 @@ export default class {
 	}
 
 	titleSong(time) {
-		// console.log(this.player.data)
-
 		if ((time >= 24000 && time <= 33000) || time >= 238000) {
 			this.songTitleobj.alpha = 1;
 			this.songArtistobj.alpha = 1;
@@ -159,7 +152,6 @@ export default class {
 			this.songArtistobj.alpha = 0;
 			this.songMVobj.alpha = 0;
 		}
-		// console.log(this.songTitleobj.alpha)
 	}
 
 	createTitleSong() {

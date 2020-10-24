@@ -15,5 +15,4 @@ export default function createMoon(scene) {
 		mesh.position.set(window.innerWidth / 20, window.innerHeight / 20, 0)
 		scene.add(mesh);
 	});
-	// return mesh;
 }

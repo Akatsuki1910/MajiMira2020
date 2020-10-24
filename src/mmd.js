@@ -8,7 +8,6 @@ const modelFile = './models/on_v101/miku.pmx';
 
 var motionFiles = [{
 	filePath: './models/motion.vmd',
-	// filePath: './models/test.vmd',
 	loop: THREE.LoopRepeat,
 	action: null,
 	fadeIn: 0.1,
@@ -48,10 +47,8 @@ export default function createMMD(scene) {
 					}
 				}
 
-				// console.log(mesh.geometry.bones)
-
 				const ikHelper = helper.objects.get(mesh).ikSolver.createHelper();
-				ikHelper.visible = true;
+				ikHelper.visible = false;
 				scene.add(ikHelper);
 
 				const physicsHelper = helper.objects.get(mesh).physics.createHelper();
@@ -63,30 +60,18 @@ export default function createMMD(scene) {
 
 				animate();
 			}, (xhr) => {
-				progress(xhr, "motion");
+				progress(xhr);
 			}, (e) => {
-				error(e, "motion")
 			});
 		},
 		(xhr) => {
-			progress(xhr, "model");
+			progress(xhr);
 		},
 		(e) => {
-			error(e, "model")
 		});
-
-	const progress = (xhr, load) => {
-		let percentComplete = xhr.loaded / xhr.total * 100;
-		console.log(load + ': ' + Math.round(percentComplete, 2) + '% downloaded');
-	}
-
-	const error = (e, load) => {
-		console.log(load + ': ' + 'An error happened');
-	}
 
 	const animate = () => {
 		requestAnimationFrame(animate);
 		helper.update(1 / 100);
 	}
-	// return mesh;
 }

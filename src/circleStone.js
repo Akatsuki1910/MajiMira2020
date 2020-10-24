@@ -50,21 +50,18 @@ function createPoint(topSize, bodySize, bodyRad, pointSlice) {
 function createGeometry(pointArr, pointSlice) {
 	const geometry = new THREE.Geometry();
 	pointArr.forEach(r => {
-		// console.log(r)
 		geometry.vertices.push(new THREE.Vector3(r[0], r[1], r[2]))
 	});
-
-	// console.log(geometry.vertices)
 
 	for (let i = 1; i <= pointSlice; i++) {
 		const a = i;
 		const b = (i + 1 <= pointSlice) ? i + 1 : 1;
 		const c = pointSlice + i;
 		const d = (c + 1 <= pointSlice * 2) ? c + 1 : pointSlice + 1;
-		geometry.faces.push(new THREE.Face3(b, a, 0)); //top
-		geometry.faces.push(new THREE.Face3(a, b, c)); //body
-		geometry.faces.push(new THREE.Face3(d, c, b)); //body
-		geometry.faces.push(new THREE.Face3(c, d, pointSlice * 2 + 1)); //bottom
+		geometry.faces.push(new THREE.Face3(b, a, 0));
+		geometry.faces.push(new THREE.Face3(a, b, c));
+		geometry.faces.push(new THREE.Face3(d, c, b));
+		geometry.faces.push(new THREE.Face3(c, d, pointSlice * 2 + 1));
 	}
 
 	geometry.computeFaceNormals();
